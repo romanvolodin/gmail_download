@@ -1,0 +1,5 @@
+black==23.7.*
+flake8==6.1.*
+flake8-pyproject==1.2.*
+isort==5.12.*
+sort-requirements==1.3.*
