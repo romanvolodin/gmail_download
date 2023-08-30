@@ -41,15 +41,17 @@ def main():
         service = build("gmail", "v1", credentials=credentials)
         response = service.users().messages().list(userId="me").execute()
         headers = ("Date", "From", "Subject")
-        for message in response["messages"][:5]:
-            msg = {}
-            raw_message = service.users().messages().get(userId="me", id=message["id"]).execute()
-            msg["snippet"] = raw_message["snippet"]
+        for message_ids in response["messages"][:5]:
+            output_message = {}
+            raw_message = (
+                service.users().messages().get(userId="me", id=message_ids["id"]).execute()
+            )
+            output_message["snippet"] = raw_message["snippet"]
             for header in raw_message["payload"]["headers"]:
                 if header["name"] in headers:
-                    msg[header["name"].lower()] = header["value"]
+                    output_message[header["name"].lower()] = header["value"]
 
-            pprint(msg)
+            pprint(output_message)
             print()
 
     except HttpError as error:
