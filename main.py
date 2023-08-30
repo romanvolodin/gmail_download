@@ -46,7 +46,8 @@ def main():
             raw_message = (
                 service.users().messages().get(userId="me", id=message_ids["id"]).execute()
             )
-            output_message["snippet"] = raw_message["snippet"]
+            snippet = raw_message["snippet"].replace("\u200c", "").replace("\ufeff͏", "").strip()
+            output_message = {"snippet": snippet}
             for header in raw_message["payload"]["headers"]:
                 if header["name"] in headers:
                     output_message[header["name"].lower()] = header["value"]
