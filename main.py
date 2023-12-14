@@ -10,6 +10,14 @@ from googleapiclient.errors import HttpError
 
 
 SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
+REPLACE_SYMBOLS = {
+    "&#39;": "'",
+    "\u200b": "",
+    "\u200c": "",
+    "\ufeff": "",
+    "\u034f": "",
+    "\u2800": "",
+}
 
 
 def get_credentials(credentials_path):
@@ -46,8 +54,10 @@ def main():
             raw_message = (
                 service.users().messages().get(userId="me", id=message_ids["id"]).execute()
             )
-            snippet = raw_message["snippet"].replace("\u200c", "").replace("\ufeff͏", "").strip()
-            output_message = {"snippet": snippet}
+            snippet = raw_message["snippet"]
+            for old, new in REPLACE_SYMBOLS.items():
+                snippet = snippet.replace(old, new)
+            output_message = {"snippet": snippet.strip()}
             for header in raw_message["payload"]["headers"]:
                 if header["name"] in headers:
                     output_message[header["name"].lower()] = header["value"]
