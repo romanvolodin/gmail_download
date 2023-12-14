@@ -1,5 +1,4 @@
 import os.path
-from pprint import pprint
 
 from environs import Env
 from google.auth.transport.requests import Request
@@ -62,8 +61,7 @@ def main():
                 if header["name"] in headers:
                     output_message[header["name"].lower()] = header["value"]
 
-            pprint(output_message)
-            print()
+            print(output_message)
 
     except HttpError as error:
         print(f"An error occurred: {error}")
