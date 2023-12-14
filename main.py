@@ -11,8 +11,14 @@ from googleapiclient.errors import HttpError
 SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 REPLACE_SYMBOLS = {
     "&#39;": "'",
+    "&quot;": '"',
+    "&lt;": "<",
+    "&gt;": ">",
+    "&amp;": "&",
     "\u200b": "",
     "\u200c": "",
+    "\u200d": "",
+    "\u200e": "",
     "\ufeff": "",
     "\u034f": "",
     "\u2800": "",
@@ -59,7 +65,10 @@ def main():
             output_message = {"snippet": snippet.strip()}
             for header in raw_message["payload"]["headers"]:
                 if header["name"] in headers:
-                    output_message[header["name"].lower()] = header["value"]
+                    header_value = header["value"]
+                    for old, new in REPLACE_SYMBOLS.items():
+                        header_value = header_value.replace(old, new)
+                    output_message[header["name"].lower()] = header_value
 
             print(output_message)
 
