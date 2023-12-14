@@ -46,9 +46,9 @@ def main():
 
     try:
         service = build("gmail", "v1", credentials=credentials)
-        response = service.users().messages().list(userId="me").execute()
+        response = service.users().messages().list(userId="me", maxResults=1000).execute()
         headers = ("Date", "From", "Subject")
-        for message_ids in response["messages"][:5]:
+        for message_ids in response["messages"]:
             output_message = {}
             raw_message = (
                 service.users().messages().get(userId="me", id=message_ids["id"]).execute()
